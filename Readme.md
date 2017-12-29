@@ -1,0 +1,1 @@
+Simple user interface for searcher
