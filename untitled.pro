@@ -17,10 +17,14 @@ CONFIG += c++11
 SOURCES += main.cpp\
         widget.cpp \
     TcpLayer.cpp \
-    ConnectionInterface.cpp
+    ConnectionInterface.cpp \
+    jsonRequest.cpp \
+    jsonResponse.cpp
 
 HEADERS  += widget.h \
     TcpLayerr.h \
-    ConnectionInterface.h
+    ConnectionInterface.h \
+    jsonRequest.h \
+    jsonResponse.h
 
 FORMS    += widget.ui

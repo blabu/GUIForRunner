@@ -1,40 +1,41 @@
 #include "TcpLayerr.h"
+#include "jsonRequest.h"
+#include "jsonResponse.h"
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <widget.h>
+
 
 TcpLayer::TcpLayer(uint16_t port, std::string ipAddress, QObject *parent) : ConnectionInterface(parent),
     socket(new QTcpSocket(this)),
     servPort(port),
-    maxSizeDataBuffer(256){
+    maxSizeDataBuffer(1024),
+    protocolVersion("v0.0.1"){
     servAddr = ipAddress.c_str();
-    dataBuffer = new char(maxSizeDataBuffer);
+    //dataBuffer = new char(maxSizeDataBuffer);
     QObject::connect(socket,SIGNAL(connected()), this, SLOT(succsesConnectToDeamon()));
-    QObject::connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(writeHandler(qint64)));
     QObject::connect(socket, SIGNAL(readyRead()),this, SLOT(readHandler()));
     socket->connectToHost(servAddr,servPort);
 }
 
 void TcpLayer::writeToDeamonMsg(const QString &msg){
-    socket->write(msg.toUtf8());
+    auto req = jsonRequest(protocolVersion);
+    req.setRequest(msg);
+    QJsonObject jso;
+    socket->write(req.write(jso).toJson());
 }
 
 //Успешное подключение
 void TcpLayer::succsesConnectToDeamon(){
-    socket->write("V0.0.1 visual start");
+    auto req = jsonRequest(protocolVersion);
+    QJsonObject jso;
+    socket->write(req.write(jso).toJson());
 }
 
 void TcpLayer::readHandler(){
-    uint16_t size = socket->read(dataBuffer,maxSizeDataBuffer);
-    QString tempStr;
-    lst.clear();
-    for(uint16_t i = 0; i<size; i++) {
-        if(dataBuffer[i] != ':') {
-            tempStr.push_back(dataBuffer[i]);
-        }else {
-            lst.push_back(tempStr);
-            tempStr.clear();
-        }
-    }
-    if(!tempStr.isEmpty()) lst.push_back(tempStr);
+    auto byteArray = socket->read(maxSizeDataBuffer);
+    auto resp = jsonResponse::getResponse(byteArray);
+    lst = resp->getList();
     emit receiveMessageFromServer(lst);
 }
 

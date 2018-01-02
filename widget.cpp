@@ -19,6 +19,7 @@ Widget::~Widget() {
 }
 
 void Widget::setVariants(const QList<QString> &list){
+    if(list.isEmpty()) return;
     QString userData = ui->InputOutputData->currentText();
     ui->InputOutputData->clear();
     ui->InputOutputData->addItem(userData);
@@ -29,6 +30,7 @@ void Widget::setVariants(const QList<QString> &list){
 }
 
 void Widget::changeDataInLineEdit(const QString &str) {
+    if(str.size() < 3) return;
     emit changeData(str);
 }
 

@@ -15,8 +15,8 @@ public:
         if(socket->isOpen()) {
             socket->close();
         }
+        lst.clear();
         delete socket;
-        delete dataBuffer;
     }
 public slots:
     void writeToDeamonMsg(const QString& msg);
@@ -27,9 +27,9 @@ private:
     QTcpSocket* socket;
     QString servAddr;
     const qint16 servPort;
-    char* dataBuffer;
     const uint16_t maxSizeDataBuffer;
     QList<QString> lst;
+    const QString protocolVersion;
 };
 
 #endif // TCPLAYER_H

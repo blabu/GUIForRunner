@@ -1,1 +1,2 @@
-Simple user interface for searcher
+Simple user interface for "Runner".
+Based on simple JSON api.

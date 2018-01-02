@@ -10,7 +10,7 @@ public:
     explicit ConnectionInterface(QObject *parent = 0);
     virtual ~ConnectionInterface()=default;
 signals:
-    void receiveMessageFromServer(QList<QString>);
+    void receiveMessageFromServer(const QList<QString>);
 public slots:
     virtual void writeToDeamonMsg(const QString& msg) = 0;
 };
